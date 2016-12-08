@@ -1,7 +1,4 @@
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,15 +14,32 @@ public class Interpreter {
     public Double input(String input) {
         Deque<String> tokens = tokenize(input);
         System.out.println(tokens);
-        if (this.isFunction(tokens)) {
+        if (this.isFunctionDeclaration(tokens)) {
             this.saveFunction(tokens);
+        }
+        else if (this.isFunctionExecution(tokens)) {
+            FunctionWrapper function = functions.get(tokens.getFirst());
+            List<String> variableValues = this.collectFunctionValues(tokens);
+            ExpressionEvaluator.evaluateExpression(function.getExpression(variableValues));
+        }
+        else {
+            ExpressionEvaluator.evaluateExpression(tokens);
         }
 
         return null;
     }
 
-    public boolean isFunction(Deque<String> input) {
+    public boolean isFunctionDeclaration(Deque<String> input) {
         return input.contains("fn");
+    }
+
+    public boolean isFunctionExecution(Deque<String> input) {
+        return functions.containsKey(input.getFirst());
+    }
+
+    public List<String> collectFunctionValues(Deque<String> input) {
+        // TODO: get string values from input
+        return null;
     }
 
     public void saveFunction(Deque<String> input) {
