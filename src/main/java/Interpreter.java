@@ -17,6 +17,10 @@ public class Interpreter {
     public Double input(String input) {
         Deque<String> tokens = tokenize(input);
         System.out.println(tokens);
+        if (this.isFunction(tokens)) {
+            this.saveFunction(tokens);
+        }
+
         return null;
     }
 
@@ -24,8 +28,9 @@ public class Interpreter {
         return input.contains("fn");
     }
 
-    public Double saveFunction() {
-        return 0.0;
+    public void saveFunction(Deque<String> input) {
+        FunctionWrapper function = new FunctionWrapper(input);
+        this.functions.put(function.getName(), function);
     }
 
     private static Deque<String> tokenize(String input) {
